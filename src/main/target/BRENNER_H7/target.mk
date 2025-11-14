@@ -1,6 +1,6 @@
 # MCU family for H743VI
 MCU_GROUP := H743
-TARGET_MCU := STM32H743
+TARGET_MCU := STM32H743VI
 
 # Register in correct family
 H743_TARGETS += BRENNER_H7
