@@ -1,22 +1,26 @@
 # MCU family
-MCU_GROUP := H7X3XI
+MCU_GROUP := H743X
 TARGET_MCU := STM32H743
 
-# Target name
-TARGET := BRENNER_H7
+# Board name
+TARGET_BOARD := BRENNER_H7
 
-# Register in H743 groups
-H743xI_TARGETS += BRENNER_H7
+# Flash + RAM size for H743
+FLASH_SIZE := 2048
+RAM_SIZE := 512
 
-# Kein target.c nötig – kein Boardcode
-# Keine TARGET_SRC-Zeile
+# Correct linker script for Betaflight H743
+LINKER_SCRIPT := stm32h743xg
 
-# Nur die Treiber die du hast
+# Ensure Betaflight includes this target
+H743X_TARGETS += BRENNER_H7
+
+# Add only your drivers
 DRIVERS += gyro_icm42688p
 DRIVERS += baro_bmp388
 
-# Flash-Treiber entfernt!
-# DRIVERS += flash_w25q128fv   ← löschen!
-
-# Zuverlässigkeit erhöhen
+# Prevent warnings from breaking the build
 CFLAGS += -Wno-error
+
+# Required by Betaflight build system
+TARGET_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
