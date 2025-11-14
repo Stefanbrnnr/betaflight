@@ -1,0 +1,44 @@
+name: Build Betaflight Target
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Target Name"
+        required: true
+        default: "BRENNER_H7"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: true
+
+    - name: Install Build Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ninja-build python3 python3-pip ccache
+
+    - name: Install Betaflight ARM Toolchain
+      run: |
+        make arm_sdk_install
+
+    - name: Build Firmware
+      env:
+        TARGET: ${{ github.event.inputs.target }}
+      run: |
+        make $TARGET
+
+    - name: Upload Firmware
+      uses: actions/upload-artifact@v4
+      with:
+        name: firmware-${{ github.event.inputs.target }}
+        path: |
+          obj/*/*.hex
+          obj/*/*.bin
+          obj/*/*.dfu
+        if-no-files-found: ignore
